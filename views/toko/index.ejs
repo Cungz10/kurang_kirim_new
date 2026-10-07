@@ -1,0 +1,168 @@
+<%- include('../layouts/header', { title: 'Master Toko' }) %>
+
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-2">
+                <span class="h-1.5 w-1.5 rounded-full bg-purple-400"></span>
+                Database Toko
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Master Toko</h1>
+            <p class="mt-1 text-sm text-white/60">Kelola dan atur daftar toko mitra terdaftar dalam sistem.</p>
+        </div>
+        <a href="/toko/create"
+           class="ios-btn-primary inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold text-white shadow-md active:scale-95">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Tambah Toko Baru
+        </a>
+    </div>
+
+    <!-- Search & Quick Stats -->
+    <div class="ios-glass-card-subtle rounded-[24px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <form method="GET" action="/toko" class="flex-1 flex items-center gap-2">
+            <div class="relative flex-1">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" name="search" value="<%= search || '' %>" placeholder="Cari kode atau nama toko..."
+                       class="w-full ios-input pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-white/40">
+            </div>
+            <button type="submit" class="ios-btn-primary rounded-xl px-4 py-2.5 text-xs font-semibold text-white">
+                Cari
+            </button>
+            <% if (search) { %>
+                <a href="/toko" class="ios-btn-secondary rounded-xl px-3 py-2.5 text-xs font-medium text-white/70">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </a>
+            <% } %>
+        </form>
+
+        <div class="flex items-center gap-2 text-xs text-white/60 shrink-0 px-2">
+            <span>Total: <strong class="text-white font-mono"><%= totalItems %></strong> toko</span>
+            <% if (search) { %>
+                <span class="text-white/30">|</span>
+                <span>Filter: "<strong class="text-white"><%= search %></strong>"</span>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- iOS Inset Grouped Table Card -->
+    <div class="ios-glass-card rounded-[32px] overflow-hidden relative shadow-2xl">
+        <div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none"></div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="border-b border-white/10 bg-white/[0.04]">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold text-white/50 text-xs uppercase tracking-wider w-12">#</th>
+                        <th class="px-5 py-4 font-semibold text-white/50 text-xs uppercase tracking-wider">Kode Toko</th>
+                        <th class="px-5 py-4 font-semibold text-white/50 text-xs uppercase tracking-wider">Nama Toko</th>
+                        <th class="px-5 py-4 font-semibold text-white/50 text-xs uppercase tracking-wider text-center">Status</th>
+                        <th class="px-5 py-4 font-semibold text-white/50 text-xs uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.07]">
+                    <% if (tokoList.length > 0) { %>
+                        <% tokoList.forEach(function(toko, idx) { %>
+                            <tr class="hover:bg-white/[0.05] transition-colors duration-150">
+                                <td class="px-5 py-4 text-white/40 text-xs font-mono">
+                                    <%= (currentPage - 1) * perPage + idx + 1 %>
+                                </td>
+                                <td class="px-5 py-4">
+                                    <span class="font-mono text-xs bg-purple-500/15 text-purple-300 border border-purple-400/30 px-3 py-1 rounded-full font-semibold">
+                                        <%= toko.kode_toko %>
+                                    </span>
+                                </td>
+                                <td class="px-5 py-4">
+                                    <p class="font-medium text-white"><%= toko.nama_toko %></p>
+                                </td>
+                                <td class="px-5 py-4 text-center">
+                                    <% if (toko.status) { %>
+                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 px-3 py-0.5 text-xs font-medium text-emerald-300">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Aktif
+                                        </span>
+                                    <% } else { %>
+                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-3 py-0.5 text-xs font-medium text-white/50">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-white/40"></span> Nonaktif
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="px-5 py-4">
+                                    <div class="flex justify-end items-center gap-2">
+                                        <!-- iOS Toggle Switch Button -->
+                                        <form action="/toko/<%= toko.id %>/toggle-status?_method=PATCH" method="POST">
+                                            <input type="hidden" name="_method" value="PATCH">
+                                            <button type="submit" title="<%= toko.status ? 'Nonaktifkan' : 'Aktifkan' %>"
+                                                    class="inline-flex items-center justify-center h-8 w-8 rounded-full border transition-all duration-200 <%= toko.status ? 'border-amber-500/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25' : 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' %>">
+                                                <% if (toko.status) { %>
+                                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                                <% } else { %>
+                                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                <% } %>
+                                            </button>
+                                        </form>
+
+                                        <!-- Edit Action -->
+                                        <a href="/toko/<%= toko.id %>/edit"
+                                           class="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 hover:text-white hover:bg-white/15 transition-all">
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            Edit
+                                        </a>
+
+                                        <!-- Delete Action -->
+                                        <form action="/toko/<%= toko.id %>?_method=DELETE" method="POST"
+                                              onsubmit="return confirm('Hapus toko <%= toko.nama_toko %>?')">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit"
+                                                    class="inline-flex items-center justify-center h-8 w-8 rounded-full border border-rose-500/30 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 transition-all">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="px-5 py-16 text-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div class="flex h-14 w-14 items-center justify-center rounded-[20px] bg-white/[0.06] border border-white/10 text-white/40">
+                                        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    </div>
+                                    <p class="text-white/60">Belum ada data toko.</p>
+                                    <a href="/toko/create" class="text-blue-400 hover:text-blue-300 text-xs font-semibold">+ Tambah toko pertama</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (totalPages > 1) { %>
+            <div class="border-t border-white/10 px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.02]">
+                <p class="text-xs text-white/50">
+                    Menampilkan <span class="text-white font-medium"><%= (currentPage - 1) * perPage + 1 %></span> - <span class="text-white font-medium"><%= Math.min(currentPage * perPage, totalItems) %></span> dari <span class="text-white font-medium"><%= totalItems %></span> toko
+                </p>
+                <div class="flex items-center gap-1.5">
+                    <% if (currentPage > 1) { %>
+                        <a href="/toko?page=<%= currentPage - 1 %><%= search ? '&search=' + encodeURIComponent(search) : '' %>" class="ios-btn-secondary rounded-lg px-3 py-1.5 text-xs text-white/80">Sebelumnya</a>
+                    <% } %>
+                    <% for (let p = 1; p <= totalPages; p++) { %>
+                        <a href="/toko?page=<%= p %><%= search ? '&search=' + encodeURIComponent(search) : '' %>" class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all <%= p === currentPage ? 'ios-btn-primary text-white font-bold' : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white' %>"><%= p %></a>
+                    <% } %>
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/toko?page=<%= currentPage + 1 %><%= search ? '&search=' + encodeURIComponent(search) : '' %>" class="ios-btn-secondary rounded-lg px-3 py-1.5 text-xs text-white/80">Selanjutnya</a>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../layouts/footer') %>

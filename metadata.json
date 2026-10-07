@@ -1,0 +1,7 @@
+{
+  "name": "Kurang Kirim",
+  "description": "Sistem Manajemen Surat Jalan - Kurang Kirim",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

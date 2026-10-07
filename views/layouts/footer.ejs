@@ -1,0 +1,32 @@
+    </main>
+
+    <!-- iOS Minimalist Glass Footer -->
+    <footer class="mt-auto py-8 px-4 text-center">
+        <div class="mx-auto max-w-6xl flex flex-col items-center gap-3">
+            <!-- iOS Home Indicator Pill -->
+            <div class="w-32 h-1 rounded-full bg-white/20 backdrop-blur-md mb-2"></div>
+            <p class="text-xs text-white/40 font-medium">
+                &copy; <%= new Date().getFullYear() %> Kurang Kirim — Sistem Manajemen Surat Jalan
+            </p>
+            <p class="text-[11px] text-white/25">
+                Designed with iOS Glassmorphism
+            </p>
+        </div>
+    </footer>
+
+    <!-- Auto-dismiss flash message -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flash = document.getElementById('flash-success');
+            if (flash) {
+                setTimeout(() => {
+                    flash.style.transition = 'opacity 500ms, transform 500ms';
+                    flash.style.opacity = '0';
+                    flash.style.transform = 'translateY(-15px) scale(0.95)';
+                    setTimeout(() => flash.remove(), 500);
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
